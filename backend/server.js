@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const http = require('http');
 const connectDB = require('./src/config/db');
 
+const authRoutes = require('./src/routes/auth.routes');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -25,7 +27,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Placeholder — routes come in chunk 2 & 3
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 // app.use('/api/campaigns', campaignRoutes);
 
 const PORT = process.env.PORT || 5000;
