@@ -8,7 +8,7 @@ const authRoutes = require('./src/routes/auth.routes');
 const campaignRoutes = require('./src/routes/campaign.routes');
 const { initSocket } = require('./src/socket/socket');
 
-const app = express(;
+const app = express();
 const server = http.createServer(app);
 
 // Connect DB
