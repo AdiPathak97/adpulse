@@ -1,3 +1,5 @@
+![CI](https://github.com/AdiPathak97/adpulse/actions/workflows/ci.yml/badge.svg)
+
 # adpulse
 
 A real-time campaign analytics dashboard for marketing teams.
