@@ -16,21 +16,28 @@ const initSocket = (server) => {
   // Auth middleware for every socket connection
   io.use(async (socket, next) => {
     try {
-      // cookie-parser doesn't run on sockets — parse manually
+      let token;
+
+      // try cookie first (web)
       const cookieHeader = socket.handshake.headers.cookie || '';
       const tokenCookie = cookieHeader
         .split(';')
         .find(c => c.trim().startsWith('token='));
 
-      if (!tokenCookie) return next(new Error('Not authenticated'));
+      if (tokenCookie) {
+        token = tokenCookie.split('=')[1];
+      } else if (socket.handshake.auth?.token) {
+        // fallback to auth token (mobile)
+        token = socket.handshake.auth.token;
+      }
 
-      const token = tokenCookie.split('=')[1];
+      if (!token) return next(new Error('Not authenticated'));
+
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
-
       if (!user) return next(new Error('User not found'));
 
-      socket.user = user; // attach user to socket instance
+      socket.user = user;
       next();
     } catch (err) {
       next(new Error('Invalid token'));
