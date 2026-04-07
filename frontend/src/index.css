@@ -222,3 +222,31 @@ button:hover:not(:disabled) { background: #4338ca; }
   justify-content: flex-end;
   margin-top: 0.75rem;
 }
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+  display: inline-block;
+  transition: background 0.3s;
+}
+
+.live-dot--connected {
+  background: #16a34a;
+  box-shadow: 0 0 0 2px #dcfce7;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 2px #dcfce7; }
+  50% { box-shadow: 0 0 0 4px #bbf7d0; }
+}

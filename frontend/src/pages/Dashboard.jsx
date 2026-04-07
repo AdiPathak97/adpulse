@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useCampaigns } from '../context/CampaignContext';
 import StatsCard from '../components/StatsCard';
 import CampaignModal from '../components/CampaignModal';
+import useWebSocket from '../hooks/useWebSocket';
+import LiveIndicator from '../components/LiveIndicator';
 
 const STATUS_COLORS = {
   active: '#16a34a',
@@ -13,6 +15,14 @@ const STATUS_COLORS = {
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const { campaigns, loading, error, addCampaign, editCampaign, removeCampaign } = useCampaigns();
+
+  // subscribe to all active campaign rooms
+  const activeCampaignIds = campaigns
+    .filter(c => c.status === 'active')
+    .map(c => c._id);
+
+  useWebSocket(activeCampaignIds);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState(null);
 
@@ -52,6 +62,7 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <h1>adpulse</h1>
         <div className="header-right">
+          <LiveIndicator />
           <span className="user-name">Hi, {user.name}</span>
           <button className="btn-secondary" onClick={logout}>Logout</button>
         </div>
