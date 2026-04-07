@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View, Text, FlatList, StyleSheet,
   ActivityIndicator, TouchableOpacity, RefreshControl
@@ -13,7 +14,7 @@ const STATUS_COLORS = {
   completed: '#6b7280'
 };
 
-const DashboardScreen = () => {
+const DashboardScreen = ({ navigation }) => {
   const { user, logout } = useAuth();
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +45,11 @@ const DashboardScreen = () => {
     }
   };
 
-  useEffect(() => { load(); }, []);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [])
+  );
 
   if (loading) return (
     <View style={styles.center}>
@@ -56,9 +61,17 @@ const DashboardScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>adpulse</Text>
-        <TouchableOpacity onPress={logout}>
-          <Text style={styles.logout}>Logout</Text>
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            style={styles.newButton}
+            onPress={() => navigation.navigate('CreateCampaign')}
+          >
+            <Text style={styles.newButtonText}>+ New</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={logout}>
+            <Text style={styles.logout}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Text style={styles.welcome}>Hi, {user.name}</Text>
@@ -116,6 +129,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', padding: 16, paddingTop: 56,
     borderBottomWidth: 1, borderBottomColor: '#eee'
   },
+  headerRight: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  newButton: {
+    backgroundColor: '#4f46e5', borderRadius: 6,
+    paddingHorizontal: 12, paddingVertical: 6
+  },
+  newButtonText: { color: '#fff', fontSize: 13, fontWeight: '600' },
   logo: { fontSize: 20, fontWeight: '700', color: '#4f46e5' },
   logout: { color: '#888', fontSize: 14 },
   welcome: { padding: 16, fontSize: 14, color: '#666' },
