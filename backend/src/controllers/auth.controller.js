@@ -15,6 +15,7 @@ const register = async (req, res) => {
     setTokenCookie(res, token);
 
     res.status(201).json({
+      token,
       user: { id: user._id, name: user.name, email: user.email }
     });
   } catch (error) {
@@ -36,6 +37,7 @@ const login = async (req, res) => {
     setTokenCookie(res, token);
 
     res.json({
+      token,
       user: { id: user._id, name: user.name, email: user.email }
     });
   } catch (error) {
