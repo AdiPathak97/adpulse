@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: adpulse-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - adpulse-network
+
+  backend:
+    build: ./backend
+    container_name: adpulse-backend
+    ports:
+      - '5000:5000'
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb://mongo:27017/adpulse
+      JWT_SECRET: ${JWT_SECRET}
+      CLIENT_URL: http://localhost
+    depends_on:
+      - mongo
+    networks:
+      - adpulse-network
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:5000/api
+        VITE_SOCKET_URL: http://localhost:5000
+    container_name: adpulse-frontend
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+    networks:
+      - adpulse-network
+
+volumes:
+  mongo-data:
+
+networks:
+  adpulse-network:
+    driver: bridge
